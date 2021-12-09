@@ -59,16 +59,40 @@ class SnowFlake_load:
         
         try:
 
-            # for i,row in sales.iterrows():
-            #     sql = f"INSERT INTO ARUN.ANUP.s_data VALUES (%s,%s,%s,%s,%s,%s)"
-            #     self.db_cursor.execute(sql, tuple(row))
-            #     logger.info("records inserted")
-            #     self.db_connection.commit()
+            self.db_cursor.execute("use role ACCOUNTADMIN")
+            self.db_cursor.execute("use warehouse RANJITH")
+            self.db_cursor.execute("use database ARUN")
+            self.db_cursor.execute("use schema ANUP")
 
-            success, nchunks, nrows, _ = write_pandas(self.db_connection, sales, 'SALES_DATA')
-            logger.info("success : "+str(success))
-            logger.info("nchunks : "+str(nchunks))
-            logger.info("number of rows : "+str(nrows))
+            self.db_cursor.execute('''create or replace stage mystage
+                                    storage_integration = s3_integrate
+                                    url = 's3://etlpipeline/sales-data/'
+                                    file_format = (type = CSV)''')
+            
+            self.db_cursor.execute("show stages")
+
+            result = self.db_cursor.fetchall()
+
+            for x in result:
+                logger.info(x)
+
+            self.db_cursor.execute("ls @mystage")
+            result = self.db_cursor.fetchall()
+
+            for x in result:
+                logger.info(x)
+
+            self.db_cursor.execute('''create or replace pipe mypipe auto_ingest = true as
+                                        copy into sales_data
+                                        from @mystage''')
+            
+            self.db_cursor.execute("show pipes")
+
+            self.db_cursor.execute("select *from sales_data")
+            result = self.db_cursor.fetchall()
+
+            for x in result:
+                logger.info(x)
 
         except Exception as e:
             logger.error(e)

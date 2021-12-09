@@ -1,5 +1,5 @@
 from ETL_PIPELINE.extract_dataframe import *
-#from ETL_PIPELINE.load_into_snowflake import *
+from ETL_PIPELINE.load_into_snowflake import *
 from ETL_PIPELINE.transormations import *
 #from ETL_PIPELINE.notifications_slack import *
 from ETL_PIPELINE.upload_s3 import *
@@ -22,8 +22,8 @@ if __name__ == "__main__":
 
     
     #load
-    # snow = SnowFlake_load()
-    # snow.make_connection()
-    # snow.load(load)
+    snow = SnowFlake_load()
+    snow.make_connection()
+    snow.load(load)
 
     #slack_noitfy()

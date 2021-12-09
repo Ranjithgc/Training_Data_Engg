@@ -34,8 +34,7 @@ class Upload:
         try:
             
             df = pd.DataFrame(sales)
-            #df.to_json('sales.json')
-            df.to_csv(f"/home/ubuntu/UseCase1/sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv")
+            df.to_csv(f"C:\Users\Ranjith.gc\Training(Ranjith)\Phase 2\UseCase2_Ec2\sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv", header=False, index=False)
             logger.info("csv file created and uploaded dataframe to csv file")
 
         except Exception as e:
@@ -45,13 +44,9 @@ class Upload:
     def upload_json_s3(self):
         
         try:
-            #object = self.s3.Object('etlpipeline', 'sales.json')
+            
+            self.s3.Bucket('etlpipeline').upload_file(Filename=f"sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv", Key=f"sales-data/sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv")
 
-            #result = object.put(Body=open('/home/ubuntu/UseCase1/sales.json', 'rb'))
-            
-            object = self.s3.Object('etlpipeline', (f"sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv"))
-            
-            result1 = object.put(Body=open(f"/home/ubuntu/UseCase1/sales_{datetime.strftime(datetime.now(),'%Y-%m-%d %H:%M')}.csv", 'rb'))
             logger.info("file uploaded")
 
         except Exception as e:

@@ -29,7 +29,7 @@ class Extract_dataframe:
         
         try:
 
-            self.sales_data = pd.read_csv(r'C:\Users\Ranjith.gc\Training(Ranjith)\Phase 2\UseCase2_Ec2\ETL_PIPELINE\sales_data_sample.csv')
+            self.sales_data = pd.read_csv(r'/home/ubuntu/UseCase1/ETL_PIPELINE/sales_data_sample.csv')
 
         except Exception as e:
             logger.error(e)
@@ -43,7 +43,7 @@ class Extract_dataframe:
             print(now)
             subtracted_date = now - timedelta(days=1)
             add_hour = subtracted_date + timedelta(hours=1)
-            extract_data = self.sales_data[(self.sales_data['ORDERDATE']>=pd.to_datetime(subtracted_date)) & (self.sales_data['ORDERDATE']<=pd.to_datetime(add_hour))] 
+            extract_data = self.sales_data[(self.sales_data['ORDERDATE']>=pd.to_datetime(subtracted_date)) & (self.sales_data['ORDERDATE']<=pd.to_datetime(add_hour))]          
             extract_data.loc[:,'ORDERDATE']=extract_data['ORDERDATE'].astype(object)
             logger.info(extract_data)
             return extract_data
